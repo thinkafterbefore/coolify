@@ -23,4 +23,3 @@ jobs:
           context: .
           platforms: linux/amd64
           push: false
-          tags: coollabsio/coolify:next
