@@ -1,13 +1,10 @@
 name: staging-release
 
-on:
-  push:
-    branches:
-      - next
+on: push
 
 jobs:
-  staging-release:
-    runs-on: ubuntu-latest
+  staging-release-gha:
+    runs-on: buildjet-4vcpu-ubuntu-2204
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -15,21 +12,15 @@ jobs:
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           platforms: linux/amd64
-          push: true
+          push: false
           tags: coollabsio/coolify:next
-          cache-from: type=registry,ref=coollabsio/coolify:buildcache-next
-          cache-to: type=registry,ref=coollabsio/coolify:buildcache-next,mode=max
-      - uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_DEV_CHANNEL }}
